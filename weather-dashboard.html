@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    .input-container input {
+      padding: 10px;
+      width: 60%;
+      font-size: 1em;
+    }
+
+    .input-container button {
+      padding: 10px;
+      font-size: 1em;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .input-container button:hover {
+      background-color: #45a049;
+    }
+
+    .weather-info {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+
+    .weather-info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather Dashboard</h1>
+    <div class="input-container">
+      <input type="text" id="city-input" placeholder="Enter city name">
+      <button id="get-weather-btn">Get Weather</button>
+    </div>
+    <div class="weather-info" id="weather-info">
+      <!-- Weather details will appear here -->
+    </div>
+  </div>
+
+  <script>
+    const apiKey = 'https://api.openweathermap.org/data/2.5/weather?q=cumbum&appid=YOUR_API_KEY&units=metric
+'; // Replace with your OpenWeatherMap API key
+
+    document.getElementById('get-weather-btn').addEventListener('click', function() {
+      const city = document.getElementById('city-input').value;
+
+      if (!city) {
+        alert("Please enter a city name!");
+        return;
+      }
+
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          if (data.cod === '404') {
+            document.getElementById('weather-info').innerHTML = `<p>City not found. Please try again.</p>`;
+          } else {
+            const weatherDetails = `
+              <h2>${data.name}, ${data.sys.country}</h2>
+              <p>Temperature: ${data.main.temp}°C</p>
+              <p>Weather: ${data.weather[0].description}</p>
+              <p>Humidity: ${data.main.humidity}%</p>
+              <p>Wind Speed: ${data.wind.speed} m/s</p>
+            `;
+            document.getElementById('weather-info').innerHTML = weatherDetails;
+          }
+        })
+        .catch(error => {
+          document.getElementById('weather-info').innerHTML = `<p>Error fetching data. Please try again.</p>`;
+        });
+    });
+  </script>
+</body>
+</html>
